@@ -1,4 +1,4 @@
-import app.llm.clients as OllamaClient
+import app.llm.client as OllamaClient
 
 client = OllamaClient.OllamaClient()
 response = client.generate("Explain what an API is.")
