@@ -1,7 +1,12 @@
 
+import app
 from app.llm.client import OllamaClient
+from app.api.routes import Router
+from app.models.schemas import GenerateRequest, GenerateRequest
 
-client = OllamaClient()
-response = client.generate("Explain what an API is.")
+router = Router()
 
-print(response)
+
+response = router.generate(GenerateRequest(prompt="Hello, how are you?"))
+
+print(response.response)
