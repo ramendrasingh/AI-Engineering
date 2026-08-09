@@ -1,6 +1,4 @@
 
-import app
-from app.llm.client import OllamaClient
 from app.api.routes import Router
 from app.models.schemas import GenerateRequest, GenerateRequest
 
