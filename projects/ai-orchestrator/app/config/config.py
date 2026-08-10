@@ -10,3 +10,5 @@ settings = Settings()
 
 SYSTEM_PROMPT = "You are a helpful assistant."
 MAX_HISTORY_MESSAGES = 10
+MAX_TOKEN_COUNT = 4096
+OUTPUT_RESERVE_TOKENS = 512

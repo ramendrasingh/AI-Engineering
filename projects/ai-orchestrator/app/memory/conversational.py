@@ -1,5 +1,5 @@
 import json
-from app.core.config import MAX_HISTORY_MESSAGES
+from app.config.config import MAX_HISTORY_MESSAGES
 from app.logger.logger import logger
 
 class ConversationalMemory:

@@ -1,5 +1,5 @@
 import requests
-from app.core.config import settings
+from app.config.config import settings
 from app.logger.logger import logger
 from app.models.schemas import ResponseMessage
 
@@ -31,7 +31,7 @@ class OllamaClient:
                                     "model": model_name,
                                     "prompt": prompt,
                                     "stream": False
-                                }, timeout=20)
+                                }, timeout=120)
             response.raise_for_status()
             return response.json()["response"]
         except requests.RequestException as e:
