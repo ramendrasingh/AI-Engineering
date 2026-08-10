@@ -29,6 +29,6 @@ class Orchastrator:
 
         # 4. Store the generated response in memory
         self.memory.add_message(conversation_id, role, content)
-        self.memory.add_message(conversation_id, "assistant", response)
+        self.memory.add_message(conversation_id, response.role, response.content)
 
-        return response
+        return response.content

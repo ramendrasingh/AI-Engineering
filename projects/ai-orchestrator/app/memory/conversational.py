@@ -7,10 +7,11 @@ class ConversationalMemory:
 
     def add_message(self, conversation_id: str, role: str, content: str):
         """Add a message to the conversation history for a given conversation ID."""
+        message = {"role": role, "content": content}
         if conversation_id not in self.history:
-            self.history[conversation_id] = [json.dumps({"role": role, "content": content})]
+            self.history[conversation_id] = [message]
         else:
-            self.history[conversation_id].append(json.dumps({"role": role, "content": content}))
+            self.history[conversation_id].append(message)
 
 
     def get_conversation(self, conversation_id: str):

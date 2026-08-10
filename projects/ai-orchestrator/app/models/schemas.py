@@ -8,6 +8,6 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     response: str
 
-class UserMessage(BaseModel):
+class ResponseMessage(BaseModel):
     role: str
     content: str    

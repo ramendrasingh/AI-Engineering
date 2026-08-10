@@ -9,8 +9,8 @@ def test_memory_history():
 
     history = memory.get_conversation(conversation_id)
     expected_history = [
-        json.dumps({"role": "user", "content": "Hello"}),
-        json.dumps({"role": "assistant", "content": "Hi there!"})
+        {"role": "user", "content": "Hello"},
+        {"role": "assistant", "content": "Hi there!"}
     ]
     assert history == expected_history
 
@@ -26,8 +26,8 @@ def test_multiple_memory_history():
 
     history = memory.get_conversation(conversation_id1)
     expected_history = [
-        json.dumps({"role": "user", "content": "Hello Ram"}),
-        json.dumps({"role": "assistant", "content": "Hi there Ram!"})
+        {"role": "user", "content": "Hello Ram"},
+        {"role": "assistant", "content": "Hi there Ram!"}
     ]
 
     assert history == expected_history
