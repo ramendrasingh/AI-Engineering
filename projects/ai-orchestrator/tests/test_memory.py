@@ -1,5 +1,5 @@
 from app.memory.conversational import ConversationalMemory
-from app.logger.logger import logger
+import json
 
 def test_memory_history():
     memory = ConversationalMemory()
@@ -8,8 +8,11 @@ def test_memory_history():
     memory.add_message(conversation_id, "assistant", "Hi there!")
 
     history = memory.get_conversation(conversation_id)
-    print(f"Retrieved history: {history}")
-    assert history == ["user: Hello", "assistant: Hi there!"]
+    expected_history = [
+        json.dumps({"role": "user", "content": "Hello"}),
+        json.dumps({"role": "assistant", "content": "Hi there!"})
+    ]
+    assert history == expected_history
 
 def test_multiple_memory_history():
     memory = ConversationalMemory()
@@ -21,6 +24,10 @@ def test_multiple_memory_history():
     memory.add_message(conversation_id1, "user", "Hello Ram")
     memory.add_message(conversation_id1, "assistant", "Hi there Ram!")
 
-    history = memory.get_conversation(conversation_id)
-    print(f"Retrieved history: {history}")
-    assert history == ["user: Hello", "assistant: Hi there!"]
+    history = memory.get_conversation(conversation_id1)
+    expected_history = [
+        json.dumps({"role": "user", "content": "Hello Ram"}),
+        json.dumps({"role": "assistant", "content": "Hi there Ram!"})
+    ]
+
+    assert history == expected_history

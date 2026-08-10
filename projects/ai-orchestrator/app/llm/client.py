@@ -36,3 +36,20 @@ class OllamaClient:
         except requests.RequestException as e:
             logger.error(f"Error generating response: {e}")
             raise RuntimeError(f"Failed to communicate with Ollama: {e}")
+
+    def chat(self, messages) -> str:
+        logger.info(f"Generating response for prompt:, base url: {settings.OLLAMA_BASE_URL}, model: {settings.MODEL_NAME}")
+        try:
+            model_name = settings.MODEL_NAME
+            url = f"{settings.OLLAMA_BASE_URL}/api/chat"
+            response = self.session.post(url, 
+                                json={
+                                    "model": model_name,
+                                    "messages": messages,
+                                    "stream": False
+                                }, timeout=20)
+            response.raise_for_status()
+            return response.json()["response"]
+        except requests.RequestException as e:
+            logger.error(f"Error generating response: {e}")
+            raise RuntimeError(f"Failed to communicate with Ollama: {e}")

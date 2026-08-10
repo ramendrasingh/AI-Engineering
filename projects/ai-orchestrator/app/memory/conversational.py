@@ -1,4 +1,5 @@
 import json
+from app.logger.logger import logger
 
 class ConversationalMemory:
     def __init__(self):
@@ -17,7 +18,8 @@ class ConversationalMemory:
         conversation = self.history.get(conversation_id, [])
         converted_history = []
         if conversation and len(conversation) > 0:
-            converted_history = [f"{item['role']}: {item['content']}" for item in map(json.loads, conversation)]
+            logger.info(f"Conversation history for {conversation_id}: {conversation}")
+            converted_history = conversation
         return converted_history
 
     def clear_history(self, conversation_id: str):

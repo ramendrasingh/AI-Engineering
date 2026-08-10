@@ -7,3 +7,5 @@ class Settings():
     MODEL_NAME = "gemma3:4b"
 
 settings = Settings()
+
+SYSTEM_PROMPT = "You are a helpful assistant."
