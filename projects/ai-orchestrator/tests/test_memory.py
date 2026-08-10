@@ -1,0 +1,26 @@
+from app.memory.conversational import ConversationalMemory
+from app.logger.logger import logger
+
+def test_memory_history():
+    memory = ConversationalMemory()
+    conversation_id = "test_conversation"
+    memory.add_message(conversation_id, "user", "Hello")
+    memory.add_message(conversation_id, "assistant", "Hi there!")
+
+    history = memory.get_conversation(conversation_id)
+    print(f"Retrieved history: {history}")
+    assert history == ["user: Hello", "assistant: Hi there!"]
+
+def test_multiple_memory_history():
+    memory = ConversationalMemory()
+    conversation_id = "test_conversation"
+    memory.add_message(conversation_id, "user", "Hello")
+    memory.add_message(conversation_id, "assistant", "Hi there!")
+
+    conversation_id1 = "test_conversation1"
+    memory.add_message(conversation_id1, "user", "Hello Ram")
+    memory.add_message(conversation_id1, "assistant", "Hi there Ram!")
+
+    history = memory.get_conversation(conversation_id)
+    print(f"Retrieved history: {history}")
+    assert history == ["user: Hello", "assistant: Hi there!"]

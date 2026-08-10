@@ -1,8 +1,7 @@
 import requests
 from app.core.config import settings
-from app.logger.logger import get_logger
+from app.logger.logger import logger
 
-logger = get_logger("AI_Orchestrator")
 
 class OllamaClient:
     """Client for communicating with the local Ollama server."""
@@ -21,14 +20,14 @@ class OllamaClient:
             logger.error(f"Health check failed: {e}")
             return False
 
-    def generate(self, prompt: str, model_name: str = None) -> str:
+    def generate(self, prompt: str) -> str:
         logger.info(f"Generating response for prompt: {prompt} , base url: {settings.OLLAMA_BASE_URL}, model: {settings.MODEL_NAME}")
         try:
-            model_name = model_name or settings.MODEL_NAME
+            model_name = settings.MODEL_NAME
             url = f"{settings.OLLAMA_BASE_URL}/api/generate"
             response = self.session.post(url, 
                                 json={
-                                    "model": settings.MODEL_NAME,
+                                    "model": model_name,
                                     "prompt": prompt,
                                     "stream": False
                                 }, timeout=20)

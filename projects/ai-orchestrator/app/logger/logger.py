@@ -6,3 +6,5 @@ logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %
 
 def get_logger(name: str): 
     return logging.getLogger(name)
+
+logger = get_logger("AI_Orchestrator")
