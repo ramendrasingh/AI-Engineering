@@ -1,4 +1,5 @@
 import json
+from app.core.config import MAX_HISTORY_MESSAGES
 from app.logger.logger import logger
 
 class ConversationalMemory:
@@ -27,5 +28,14 @@ class ConversationalMemory:
         """Clear the conversation history for a given conversation ID."""
         if conversation_id in self.history:
             del self.history[conversation_id]
+
+
+    def get_recent_history(self, conversation_id: str):
+        """Retrieve the most recent messages for a given conversation ID, limited to a certain number of messages."""
+        conversation = self.history.get(conversation_id, [])
+        logger.info(f"Total conversation history for {conversation_id}: {len(conversation)}, sliding window size: {MAX_HISTORY_MESSAGES}")
+        if len(conversation) > MAX_HISTORY_MESSAGES:
+            return conversation[-MAX_HISTORY_MESSAGES:]
+        return conversation
 
     

@@ -13,7 +13,7 @@ class Orchastrator:
     def process_message(self, conversation_id: str, role: str, content: str) -> str:
 
         # 1. Retrieve the conversation history for context
-        conversation_history = self.memory.get_conversation(conversation_id)
+        conversation_history = self.memory.get_recent_history(conversation_id)
 
         logger.info(f"Conversation history for {conversation_id}: {conversation_history}")
 

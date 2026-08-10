@@ -9,3 +9,4 @@ class Settings():
 settings = Settings()
 
 SYSTEM_PROMPT = "You are a helpful assistant."
+MAX_HISTORY_MESSAGES = 10
