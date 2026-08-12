@@ -1,7 +1,7 @@
 import requests
 from app.config.config import settings
 from app.logger.logger import logger
-from app.models.schemas import ResponseMessage
+from app.models.schemas import ChatMessage
 
 
 class OllamaClient:
@@ -38,7 +38,7 @@ class OllamaClient:
             logger.error(f"Error generating response: {e}")
             raise RuntimeError(f"Failed to communicate with Ollama: {e}")
 
-    def chat(self, messages) -> ResponseMessage:
+    def chat(self, messages) -> ChatMessage:
         logger.info(f"Generating response for prompt:, base url: {settings.OLLAMA_BASE_URL}, model: {settings.MODEL_NAME}")
         try:
             model_name = settings.MODEL_NAME
@@ -54,7 +54,7 @@ class OllamaClient:
             data = response.json()
             logger.info("Ollama chat completed successfully")
             role, content = data["message"]["role"], data["message"]["content"]
-            return ResponseMessage(role=role, content=content)
+            return ChatMessage(role=role, content=content)
         except requests.RequestException as e:
             logger.error(f"Error generating response: {e}")
             raise RuntimeError(f"Failed to communicate with Ollama: {e}")

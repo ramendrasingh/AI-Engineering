@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import List
 
 class GenerateRequest(BaseModel):
     user_id: str
@@ -8,6 +9,10 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     response: str
 
-class ResponseMessage(BaseModel):
+class ChatMessage(BaseModel):
     role: str
-    content: str    
+    content: str   
+     
+class ConversationState(BaseModel):
+    summary: str = ""
+    messages: List[ChatMessage] = Field(default_factory=list)
