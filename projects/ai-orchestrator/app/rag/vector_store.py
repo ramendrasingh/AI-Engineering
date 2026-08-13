@@ -17,7 +17,7 @@ class VectorStore:
     def add_chunks(self, chunks):
         pass
 
-    def search(self, query_embedding: np.ndarray, top_k: int = 3) -> List[EmbeddedChunk]:
+    def search(self, query_embedding: np.ndarray, top_k: int = 3, min_similarity: float = 0.75) -> List[EmbeddedChunk]:
         scored_chunks = []
         query_norm = np.linalg.norm(query_embedding)
         for item in self.embedded_chunks:
@@ -25,7 +25,8 @@ class VectorStore:
             similarity = np.dot(query_embedding, item.embedding) / (
                 query_norm * chunk_norm
             )
-            scored_chunks.append((similarity, item))
+            if (similarity > min_similarity):
+                scored_chunks.append((similarity, item))
 
         scored_chunks.sort(key=lambda x: x[0],reverse=True)
 

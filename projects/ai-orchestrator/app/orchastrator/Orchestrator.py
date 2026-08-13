@@ -1,6 +1,6 @@
 from typing import List
 
-from app.config.config import SYSTEM_PROMPT, MAX_TOKEN_COUNT, OUTPUT_RESERVE_TOKENS, SUMMARY_TRIGGER_MESSAGES, SUMMARY_RETAIN_MESSAGES
+from app.config.config import SYSTEM_PROMPT, MAX_TOKEN_COUNT, OUTPUT_RESERVE_TOKENS, SUMMARY_TRIGGER_MESSAGES, SUMMARY_RETAIN_MESSAGES, RAG_TOP_K, RAG_MIN_SIMILARITY
 from app.exception.custom_exception import ContextWindowExceededError
 from app.logger.logger import logger
 from app.rag.chunker import Chunk
@@ -23,7 +23,7 @@ class Orchastrator:
         # 1. Retrieve the conversation history for context
         conversation_history = self.memory.get_conversation(conversation_id)
 
-        chunks = self.retriever.retrieve(query= content, top_k= 3)
+        chunks = self.retriever.retrieve(query= content, top_k= RAG_TOP_K, min_threshold=RAG_MIN_SIMILARITY)
         formatted_chunks = self.__format_chunks(chunks)
 
         logger.info(f"retrive chunks : {formatted_chunks}")
@@ -42,7 +42,10 @@ class Orchastrator:
         summary_token = self.token_counter.count_text(new_summary)
 
         # Always include system prompt
-        system_prompt = f"{SYSTEM_PROMPT.strip()} Retrieved Context\n {formatted_chunks}\nConversation Summary\n {new_summary}"
+        if chunks:
+            system_prompt = f"{SYSTEM_PROMPT.strip()} Retrieved Context\n {formatted_chunks}\nConversation Summary\n {new_summary}"
+        else:
+            system_prompt = f"{SYSTEM_PROMPT.strip()}\nConversation Summary\n {new_summary}"    
 
         system_message = ChatMessage(role = "system", content=system_prompt)
         system_tokens = self.token_counter.count_text(SYSTEM_PROMPT)
@@ -113,6 +116,8 @@ class Orchastrator:
         return new_summary, latest_conversation
 
     def __format_chunks(self, chunks: List[Chunk]) -> str:
+        if not chunks:
+            return ""
         formatted_chunks = "\n".join([f"[source: {chunk.chunk_id}]\n{chunk.page_content}\n" for chunk in chunks])
         return formatted_chunks
   
