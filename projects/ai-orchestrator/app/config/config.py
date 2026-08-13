@@ -5,6 +5,7 @@ import os
 class Settings():
     OLLAMA_BASE_URL = "http://localhost:11434"
     MODEL_NAME = "gemma3:4b"
+    EMBEDDING_MODEL = "nomic-embed-text"
 
 settings = Settings()
 

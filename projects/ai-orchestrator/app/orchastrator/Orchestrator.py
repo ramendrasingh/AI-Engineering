@@ -1,23 +1,33 @@
+from typing import List
+
 from app.config.config import SYSTEM_PROMPT, MAX_TOKEN_COUNT, OUTPUT_RESERVE_TOKENS, SUMMARY_TRIGGER_MESSAGES, SUMMARY_RETAIN_MESSAGES
 from app.exception.custom_exception import ContextWindowExceededError
 from app.logger.logger import logger
-from app.tokenizer.token_counter import TokenCounter
+from app.rag.chunker import Chunk
 from app.summary.conversation_summary import SummaryManager
 from app.models.schemas import ChatMessage
-import json
+from app.tokenizer.token_counter import TokenCounter
+
 
 
 class Orchastrator:
-    def __init__(self, llm_client, memory):
+    def __init__(self, llm_client, memory, retriever):
         self.llm_client = llm_client
         self.memory = memory
         self.token_counter = TokenCounter()
         self.summary_manager = SummaryManager(llm_client)
+        self.retriever = retriever
 
     def process_message(self, conversation_id: str, role: str, content: str) -> str:
 
         # 1. Retrieve the conversation history for context
         conversation_history = self.memory.get_conversation(conversation_id)
+
+        chunks = self.retriever.retrieve(query= content, top_k= 3)
+        formatted_chunks = self.__format_chunks(chunks)
+
+        logger.info(f"retrive chunks : {formatted_chunks}")
+        chunks_token = self.token_counter.count_text(formatted_chunks)
 
         new_summary = ""
         latest_message = []
@@ -29,11 +39,13 @@ class Orchastrator:
 
         available_budget = MAX_TOKEN_COUNT - OUTPUT_RESERVE_TOKENS
 
+        summary_token = self.token_counter.count_text(new_summary)
+
         # Always include system prompt
-        system_prompt = f"{SYSTEM_PROMPT.strip()} Conversation Summary\n {new_summary}"
+        system_prompt = f"{SYSTEM_PROMPT.strip()} Retrieved Context\n {formatted_chunks}\nConversation Summary\n {new_summary}"
 
         system_message = ChatMessage(role = "system", content=system_prompt)
-        system_tokens = self.token_counter.count_message(system_message)
+        system_tokens = self.token_counter.count_text(SYSTEM_PROMPT)
 
         if system_tokens >= available_budget:
             raise ContextWindowExceededError()
@@ -65,13 +77,16 @@ class Orchastrator:
         messages.extend(allowable_history)
         messages.append(current_message)
 
-        estimated_tokens = self.token_counter.count_messages(messages)
+        estimated_tokens = self.token_counter.count_messages(messages) + chunks_token + summary_token + current_tokens + system_tokens
         final_messages = [chat.model_dump() for chat in messages]
         logger.info(
             f"conversation_id={conversation_id} \n"
             f"budget={available_budget} \n"
             f"estimated={estimated_tokens} \n"
-            f"history={len(conversation_history)} \n"
+            f"retrived chunks={len(chunks)} \n"
+            f"retrival token={chunks_token} \n"
+            f"summary token={summary_token} \n"
+            f"history messages={len(conversation_history)} \n"
             f"selected={len(allowable_history)} \n"
             f"dropped={len(conversation_history) - len(allowable_history)}"
         )
@@ -96,4 +111,8 @@ class Orchastrator:
         self.memory.replace_messages(conversation_id, latest_conversation)
         logger.info(f"New Conversation for {conversation_id}: {latest_conversation}")
         return new_summary, latest_conversation
+
+    def __format_chunks(self, chunks: List[Chunk]) -> str:
+        formatted_chunks = "\n".join([f"[source: {chunk.chunk_id}]\n{chunk.page_content}\n" for chunk in chunks])
+        return formatted_chunks
   
