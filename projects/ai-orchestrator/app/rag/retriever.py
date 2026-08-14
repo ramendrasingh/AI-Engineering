@@ -1,13 +1,10 @@
-from typing import List
-
+from app.logger.logger import logger
 from app.rag.chunker import Chunk
 from app.rag.embedding import EmbeddingService
 from app.rag.vector_store import VectorStore
-from app.logger.logger import logger
 
 
 class Retriever:
-
     def __init__(
         self,
         embedding_service: EmbeddingService,
@@ -16,20 +13,16 @@ class Retriever:
         self.embedding_service = embedding_service
         self.vector_store = vector_store
 
-
     def retrieve(
-        self,
-        query: str,
-        top_k: int = 3,
-        min_threshold: int = 0.75
-    ) -> List[Chunk]:
+        self, query: str, top_k: int = 3, min_threshold: int = 0.75
+    ) -> list[Chunk]:
 
         query_embedding = self.embedding_service.embed_text(query)
 
         results = self.vector_store.search(
             query_embedding=query_embedding,
             top_k=top_k * 3,
-            min_similarity=min_threshold
+            min_similarity=min_threshold,
         )
 
         seen_sources = set()
@@ -48,8 +41,10 @@ class Retriever:
                 break
 
         chunks = [item.chunk for item in deduplicated]
-        logger.info(f"query : {query}"+
-                    f"chunks: {len(chunks)}"+
-                    f"Threshold: {top_k}"+
-                    f"Top similarity: ")
+        logger.info(
+            f"query : {query}"
+            + f"chunks: {len(chunks)}"
+            + f"Threshold: {top_k}"
+            + f"Top similarity: "
+        )
         return chunks

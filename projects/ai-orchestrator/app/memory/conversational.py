@@ -1,11 +1,8 @@
-
-from app.config.config import MAX_HISTORY_MESSAGES
 from app.logger.logger import logger
-from app.models.schemas import ConversationState, ChatMessage
-from typing import List
+from app.models.schemas import ChatMessage, ConversationState
+
 
 class ConversationalMemory:
-
     def __init__(self):
         self.history: dict[str, ConversationState] = {}
 
@@ -13,24 +10,26 @@ class ConversationalMemory:
         """Add a message to the conversation history for a given conversation ID."""
         message = ChatMessage(role=role, content=content)
         if conversation_id not in self.history:
-            self.history[conversation_id] = ConversationState(summary="", messages=[message])
+            self.history[conversation_id] = ConversationState(
+                summary="", messages=[message]
+            )
         else:
             self.history[conversation_id].messages.append(message)
 
+    def replace_messages(self, conversation_id: str, message: list[ChatMessage]):
+        """update the message for particular user"""
+        self.history[conversation_id].messages = message
 
-    def replace_messages(self, conversation_id: str, message: List[ChatMessage]):
-        """ update the message for particular user"""
-        self.history[conversation_id].messages = message 
-        
-
-    def get_conversation(self, conversation_id: str) -> List[ChatMessage]:
+    def get_conversation(self, conversation_id: str) -> list[ChatMessage]:
         """Retrieve the conversation history for a given conversation ID."""
         conversation = self.history.get(conversation_id, None)
 
         if conversation is None:
-            logger.info(f"No conversation history found for {conversation_id}. Returning empty list.")
-            return []   
-        
+            logger.info(
+                f"No conversation history found for {conversation_id}. Returning empty list."
+            )
+            return []
+
         return conversation.messages
 
     def clear_history(self, conversation_id: str):
@@ -42,7 +41,9 @@ class ConversationalMemory:
         """Retrieve the summary for a given conversation ID."""
         conversation = self.history.get(conversation_id, None)
         if conversation is None:
-            logger.info(f"No conversation history found for {conversation_id}. Returning empty summary.")
+            logger.info(
+                f"No conversation history found for {conversation_id}. Returning empty summary."
+            )
             return ""
         return conversation.summary
 
@@ -51,6 +52,6 @@ class ConversationalMemory:
         if conversation_id in self.history:
             self.history[conversation_id].summary = summary
         else:
-            self.history[conversation_id] = ConversationState(summary=summary, messages=[])
-
-    
+            self.history[conversation_id] = ConversationState(
+                summary=summary, messages=[]
+            )

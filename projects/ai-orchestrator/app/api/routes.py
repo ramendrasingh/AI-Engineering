@@ -1,24 +1,24 @@
-
 from fastapi import APIRouter, HTTPException
-from requests import post
+
+from app.models.schemas import GenerateRequest, GenerateResponse
 from app.orchastrator.orchestrator import Orchastrator
-from app.models.schemas import GenerateResponse, GenerateRequest
 
 
 def create_router(orchestrator: Orchastrator) -> APIRouter:
     router = APIRouter()
 
     @router.post("/generate", response_model=GenerateResponse)
-    def generate(request: GenerateRequest) -> GenerateResponse: 
+    def generate(request: GenerateRequest) -> GenerateResponse:
         try:
             if not request.prompt:
                 raise HTTPException(status_code=400, detail="Prompt is required.")
 
-            response = orchestrator.process_message(conversation_id=request.user_id, role="user", content=request.prompt)
+            response = orchestrator.process_message(
+                conversation_id=request.user_id, role="user", content=request.prompt
+            )
             return GenerateResponse(response=response)
         except RuntimeError as e:
             raise HTTPException(status_code=500, detail=str(e))
-     
 
     @router.post("/chat", response_model=GenerateResponse)
     def chat(request: GenerateRequest) -> GenerateResponse:
@@ -26,7 +26,9 @@ def create_router(orchestrator: Orchastrator) -> APIRouter:
             if not request.prompt:
                 raise HTTPException(status_code=400, detail="Prompt is required.")
 
-            response = orchestrator.process_message(conversation_id=request.user_id, role="user", content=request.prompt)
+            response = orchestrator.process_message(
+                conversation_id=request.user_id, role="user", content=request.prompt
+            )
             return GenerateResponse(response=response)
         except RuntimeError as e:
             raise HTTPException(status_code=500, detail=str(e))

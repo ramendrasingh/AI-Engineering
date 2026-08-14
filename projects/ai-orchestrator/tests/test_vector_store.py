@@ -1,9 +1,8 @@
-
-
 from app.rag.chunker import SentenceAwareChunker
 from app.rag.embedding import EmbeddingService
 from app.rag.loader import KnowledgeLoader
 from app.rag.vector_store import VectorStore
+
 
 def test_vector_store():
     loader = KnowledgeLoader("knowledge")

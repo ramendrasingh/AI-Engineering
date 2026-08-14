@@ -1,6 +1,3 @@
-from fastapi import FastAPI
-
-from app.api.routes import create_router
 from app.llm.client import OllamaClient
 from app.memory.conversational import ConversationalMemory
 from app.orchastrator.orchestrator import Orchastrator
@@ -55,11 +52,21 @@ orchestrator = Orchastrator(
     llm_client=client, memory=memory, retriever=retriever, tool_registory=tool_registry
 )
 
+# response = orchestrator.process_message(
+#    conversation_id="abc", role="user", content="List file of the knowledge directory"
+# )
 
-app = FastAPI(
-    title="AI Orchastrator",
-    description="AI service to orchestrate multiple AI models and provide a unified interface for generating responses.",
-    version="1.0.0",
+# response = orchestrator.process_message(
+#    conversation_id="abc",
+#    role="user",
+#    content="Find API documentation in local directory",
+# )
+
+# RAG path test
+response = orchestrator.process_message(
+    conversation_id="abc",
+    role="user",
+    content="My name is Ram",
 )
 
-app.include_router(create_router(orchestrator=orchestrator))
+print(response)

@@ -4,7 +4,6 @@ from app.rag.loader import KnowledgeLoader
 from app.rag.retriever import Retriever
 from app.rag.vector_store import VectorStore
 
-
 loader = KnowledgeLoader("knowledge")
 
 docs = loader.load_document()
@@ -14,9 +13,7 @@ chunker = SentenceAwareChunker()
 chunks = []
 
 for doc in docs:
-    chunks.extend(
-        chunker.chunk_document(doc)
-    )
+    chunks.extend(chunker.chunk_document(doc))
 
 embedder = EmbeddingService()
 

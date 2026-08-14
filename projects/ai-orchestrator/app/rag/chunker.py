@@ -1,15 +1,17 @@
-from typing import List
-from pydantic import BaseModel, Field
-from app.rag.loader import Document
 import re
+
+from pydantic import BaseModel, Field
+
+from app.rag.loader import Document
+
 
 class Chunk(BaseModel):
     chunk_id: str
     page_content: str
     metadata: dict = Field(default_factory=dict)
 
-class SentenceAwareChunker:
 
+class SentenceAwareChunker:
     def __init__(
         self,
         min_target_size: int = 500,
@@ -22,10 +24,10 @@ class SentenceAwareChunker:
         self.min_overlap = min_overlap
         self.max_overlap = max_overlap
 
-    def chunk_document(self, doc: Document) -> List[Chunk]:
+    def chunk_document(self, doc: Document) -> list[Chunk]:
         paragraphs = doc.page_content.split("\n\n")
-        chunks: List[Chunk] = []
-        current_sentences: List[str] = []
+        chunks: list[Chunk] = []
+        current_sentences: list[str] = []
         chunk_count = 0
 
         for paragraph in paragraphs:
@@ -59,12 +61,12 @@ class SentenceAwareChunker:
 
         return chunks
 
-    def _split_into_sentences(self, text: str) -> List[str]:
-        sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    def _split_into_sentences(self, text: str) -> list[str]:
+        sentences = re.split(r"(?<=[.!?])\s+", text.strip())
         return [s.strip() for s in sentences if s.strip()]
 
-    def _build_overlap_sentences(self, sentences: List[str]) -> List[str]:
-        overlap: List[str] = []
+    def _build_overlap_sentences(self, sentences: list[str]) -> list[str]:
+        overlap: list[str] = []
         total = 0
         for sentence in reversed(sentences):
             length = len(sentence)
@@ -81,11 +83,13 @@ class SentenceAwareChunker:
 
     def _create_chunk(self, text: str, doc: Document, index: int) -> Chunk:
         metadata = doc.metadata.copy()
-        metadata.update({
-            "document_id": doc.id,
-            "chunk_index": index,
-            "character_count": len(text),
-        })
+        metadata.update(
+            {
+                "document_id": doc.id,
+                "chunk_index": index,
+                "character_count": len(text),
+            }
+        )
 
         return Chunk(
             chunk_id=f"{doc.id}_chunk_{index}",

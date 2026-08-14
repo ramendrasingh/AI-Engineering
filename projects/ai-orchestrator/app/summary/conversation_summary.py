@@ -1,15 +1,13 @@
-
-from app.config.config import SUMMARY_PROMPT
+from app.config.config import settings
 from app.logger.logger import logger
-from typing import List
 from app.models.schemas import ChatMessage
 
-class SummaryManager():
 
+class SummaryManager:
     def __init__(self, client):
         self.client = client
 
-    def summarize_messages(self, old_summary: str, messages: List[ChatMessage]):
+    def summarize_messages(self, old_summary: str, messages: list[ChatMessage]):
         """
         Summarize the given messages.
 
@@ -20,12 +18,15 @@ class SummaryManager():
             str: The summary of the messages.
         """
 
-        convesation = "\n".join([f"{message.role}: {message.content}" for message in messages])
+        convesation = "\n".join(
+            [f"{message.role}: {message.content}" for message in messages]
+        )
 
-        summary_prompt = SUMMARY_PROMPT.format(existing_summary = old_summary, conversation = convesation)
+        summary_prompt = settings.SUMMARY_PROMPT.format(
+            existing_summary=old_summary, conversation=convesation
+        )
 
         return self.__process_messages(summary_prompt)
-
 
     def __process_messages(self, prompt: str) -> str:
         """

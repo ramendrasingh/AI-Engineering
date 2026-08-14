@@ -1,9 +1,11 @@
 import tiktoken
+
 from app.models.schemas import ChatMessage
+
 
 class TokenCounter:
     MESSAGE_OVERHEAD = 4
-    
+
     def __init__(self):
         self.encoding = tiktoken.get_encoding("cl100k_base")
 
@@ -14,9 +16,9 @@ class TokenCounter:
 
     def count_message(self, message: ChatMessage) -> int:
         return (
-            self.count_text(message.role) +
-            self.count_text(message.content) +
-            self.MESSAGE_OVERHEAD
+            self.count_text(message.role)
+            + self.count_text(message.content)
+            + self.MESSAGE_OVERHEAD
         )
 
     def count_messages(self, messages: list[ChatMessage]) -> int:
