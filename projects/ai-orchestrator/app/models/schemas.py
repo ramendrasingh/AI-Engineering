@@ -32,3 +32,14 @@ class ToolResult(BaseModel):
 class ToolCall(BaseModel):
     tool: str | None = None
     arguments: dict[str, Any] = Field(default_factory={"": None})
+
+
+class ConversationContext(BaseModel):
+    conversation_id: str
+    role: str
+    user_message: str
+    conversation_history: list[ChatMessage]
+    latest_messages: list[ChatMessage]
+    summary: str = ""
+    system_message: ChatMessage
+    current_message: ChatMessage

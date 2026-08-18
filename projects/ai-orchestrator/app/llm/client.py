@@ -22,16 +22,32 @@ class OllamaClient:
             logger.error(f"Health check failed: {e}")
             return False
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, prompt: str, json_format: bool = False) -> str:
         logger.info(
             f"Generating response for prompt: {prompt} , base url: {settings.OLLAMA_BASE_URL}, model: {settings.MODEL_NAME}"
         )
+        model_name = settings.MODEL_NAME
+        url = f"{settings.OLLAMA_BASE_URL}/api/generate"
+        options = {}
+
+        if json_format:
+            options = {
+                "model": model_name,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+            }
+        else:
+            options = {
+                "model": model_name,
+                "prompt": prompt,
+                "stream": False,
+            }
+
         try:
-            model_name = settings.MODEL_NAME
-            url = f"{settings.OLLAMA_BASE_URL}/api/generate"
             response = self.session.post(
                 url,
-                json={"model": model_name, "prompt": prompt, "stream": False},
+                json=options,
                 timeout=120,
             )
             response.raise_for_status()

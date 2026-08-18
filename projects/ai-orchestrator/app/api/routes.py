@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 
 from app.models.schemas import GenerateRequest, GenerateResponse
-from app.orchastrator.orchestrator import Orchastrator
+from app.orchastrator.orchestrator import Orchestrator
 
 
-def create_router(orchestrator: Orchastrator) -> APIRouter:
+def create_router(orchestrator: Orchestrator) -> APIRouter:
     router = APIRouter()
 
     @router.post("/generate", response_model=GenerateResponse)

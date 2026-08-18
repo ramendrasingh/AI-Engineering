@@ -10,6 +10,20 @@ class Settings:
     SUMMARY_RETAIN_MESSAGES = 5
     RAG_TOP_K = 3
     RAG_MIN_SIMILARITY = 0.60
+    MAX_TOOL_STEPS = 5
+    MAX_SEARCH_RESULTS = 50
+    DEFAULT_EXCLUDED_DIRS = {
+        ".venv",
+        "venv",
+        ".git",
+        "__pycache__",
+        "node_modules",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        "build",
+        "dist",
+    }
 
     SUMMARY_PROMPT = """
     You are creating long-term memory for an AI assistant.
@@ -42,47 +56,57 @@ class Settings:
     """
 
     TOOL_SELECTION_PROMPT = """
+You are a tool-selection engine.
 
-    You are a tool-selection engine.
+Your ONLY job is to decide the NEXT tool action.
 
-    Available tools:
-    1. read_file(path)
-    Read the contents of a file.
+Available tools:
 
-    2. list_directory(path)
-    List files and folders in a directory.
+1. read_file
+   argument: path
 
-    3. search_files(query)
-    Search recursively for files by filename.
+2. list_directory
+   argument: path
 
-    Rules:
-    - If the user asks to read, open, show, display, or inspect a file, use read_file.
-    - Otherwise answer directly.
-    - Return ONLY valid JSON.
+3. search_files
+   argument: query
 
-    Examples:
+Rules:
 
-    User: Read knowledge/api.md
-    Response:
-    {"tool":"read_file","arguments":{"path":"knowledge/api.md"}}
+1. Use read_file when the user asks to read, open, inspect, show, display, or summarize a specific file.
 
-    User: What is FastAPI?
-    Response:
-    {"tool":null,"arguments":{}}
+2. Use list_directory when the user asks to list or browse a directory.
 
-    User: Show README.md
-    Response:
-    {"tool":"read_file","arguments":{"path":"README.md"}}
-    
-    User: List the knowledge folder
-    {"tool":"list_directory","arguments":{"path":"knowledge"}}
+3. Use search_files when the user asks to find or locate a file.
 
-    User: Find API documentation
-    {"tool":"search_files","arguments":{"query":"api"}}
+4. search_files query MUST be a short filename keyword, NOT a natural-language sentence.
 
-    Return ONLY a valid JSON object. Do NOT wrap your response in markdown code blocks like ```json ... ```. Your output must begin directly with { and end directly with }.
+5. If a previous tool result already provides the required information, return no tool.
 
-    User request:
+6. If no tool is required, return:
+{"tool":null,"arguments":{}}
+
+7. Return ONLY valid JSON.
+
+8. Never return explanations, markdown, or additional text.
+
+Examples:
+
+Find the API documentation
+{"tool":"search_files","arguments":{"query":"api"}}
+
+Find architecture documentation
+{"tool":"search_files","arguments":{"query":"architecture"}}
+
+Read knowledge/api.md
+{"tool":"read_file","arguments":{"path":"knowledge/api.md"}}
+
+List the knowledge directory
+{"tool":"list_directory","arguments":{"path":"knowledge"}}
+
+What is FastAPI?
+{"tool":null,"arguments":{}}
+
     """
 
 

@@ -11,8 +11,17 @@ class SearchFilesTool(Tool):
         "Recursively search the workspace for files matching a filename query."
     )
 
-    def __init__(self, workspace_root: str):
+    def __init__(
+        self,
+        workspace_root: str,
+        max_result: int,
+        excluded_dirs: set[str] | None = None,
+    ):
         self.workspace_root = Path(workspace_root).resolve()
+        self.excluded_dirs = (
+            excluded_dirs if excluded_dirs is not None else self.DEFAULT_EXCLUDED_DIRS
+        )
+        self.max_result = max_result
 
     def execute(self, query: str) -> ToolResult:
         logger.info("executing search files Tool")
@@ -29,6 +38,13 @@ class SearchFilesTool(Tool):
             matches = []
 
             for path in self.workspace_root.rglob("*"):
+                if len(matches) >= self.max_result:
+                    break
+
+                # Skip excluded directories
+                if any(part in self.excluded_dirs for part in path.parts):
+                    continue
+
                 if path.is_file() and query in path.name.lower():
                     matches.append(str(path.relative_to(self.workspace_root)))
 
