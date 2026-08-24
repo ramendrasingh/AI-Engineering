@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from app.config.config import settings
 from app.logger.logger import logger
 from app.models.schemas import ToolResult
 from app.tool.base import Tool
@@ -19,7 +20,9 @@ class SearchFilesTool(Tool):
     ):
         self.workspace_root = Path(workspace_root).resolve()
         self.excluded_dirs = (
-            excluded_dirs if excluded_dirs is not None else self.DEFAULT_EXCLUDED_DIRS
+            excluded_dirs
+            if excluded_dirs is not None
+            else settings.DEFAULT_EXCLUDED_DIRS
         )
         self.max_result = max_result
 

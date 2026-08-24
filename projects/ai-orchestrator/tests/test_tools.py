@@ -56,6 +56,48 @@ tool_registry.register(
 )
 
 
+def test_list_directory():
+    tool = ListDirectoryTool(workspace_root=workspace_root)
+    result = tool.execute(path="knowledge")
+    assert result.success is True
+    assert "api.md" in result.content
+
+
+def test_read_file():
+    tool = ReadFileTool(workspace_root=workspace_root)
+    result = tool.execute(path="knowledge/api.md")
+
+    assert result.success is True
+    assert "AI Orchestrator API" in result.content
+
+
+def test_search_files():
+    tool = SearchFilesTool(workspace_root=workspace_root, max_result=10)
+    result = tool.execute(query="api")
+
+    assert result.success is True
+    assert "knowledge/api.md" in result.content
+
+
+def test_search_then_read():
+    orchestrator = Orchestrator(
+        llm_client=client,
+        memory=memory,
+        retriever=retriever,
+        tool_registory=tool_registry,
+        token_counter=token_counter,
+        summary_manager=summary_manager,
+    )
+    response = orchestrator.process_message(
+        conversation_id="test-1",
+        role="user",
+        content="Find the API documentation and summarize it.",
+    )
+
+    assert response is not None
+    assert "endpoint" in response.lower()
+
+
 def test_rag_question():
     orchestrator = Orchestrator(
         llm_client=client,

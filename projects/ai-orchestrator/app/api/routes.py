@@ -34,7 +34,12 @@ def create_router(orchestrator: Orchestrator) -> APIRouter:
             raise HTTPException(status_code=500, detail=str(e))
 
     @router.get("/health")
-    def health_check() -> bool:
-        return orchestrator.llm_client.health_check()
+    def health_check() -> dict:
+        healthy = orchestrator.llm_client.health_check()
+
+        if healthy:
+            return {"status": "healthy", "ollama": "healthy", "model": "gemma3:4b"}
+        else:
+            return {"status": "Not Running", "ollama": "Not Working", "model": ""}
 
     return router

@@ -5,6 +5,7 @@ from app.models.schemas import ChatMessage, ConversationContext, ToolCall
 from app.rag.chunker import Chunk
 from app.summary.conversation_summary import SummaryManager
 from app.tokenizer.token_counter import TokenCounter
+from app.tool.registry import ToolRegistry
 
 
 class Orchestrator:
@@ -13,7 +14,7 @@ class Orchestrator:
         llm_client,
         memory,
         retriever,
-        tool_registory,
+        tool_registory: ToolRegistry,
         token_counter: TokenCounter,
         summary_manager: SummaryManager,
     ):
