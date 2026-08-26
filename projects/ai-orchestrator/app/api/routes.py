@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException
 
+from app.health.health_service import HealthService
 from app.models.schemas import GenerateRequest, GenerateResponse
 from app.orchastrator.orchestrator import Orchestrator
 
 
 def create_router(orchestrator: Orchestrator) -> APIRouter:
     router = APIRouter()
+    health_service = HealthService(orchestrator)
 
     @router.post("/generate", response_model=GenerateResponse)
     def generate(request: GenerateRequest) -> GenerateResponse:
@@ -33,13 +35,17 @@ def create_router(orchestrator: Orchestrator) -> APIRouter:
         except RuntimeError as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-    @router.get("/health")
-    def health_check() -> dict:
-        healthy = orchestrator.llm_client.health_check()
+    @router.get("/health/live")
+    def liveness():
+        return health_service.liveness()
 
-        if healthy:
-            return {"status": "healthy", "ollama": "healthy", "model": "gemma3:4b"}
+    @router.get("/health/ready")
+    def health_check() -> dict:
+        result, ready = health_service.readyness()
+
+        if ready:
+            return result
         else:
-            return {"status": "Not Running", "ollama": "Not Working", "model": ""}
+            raise HTTPException(status_code=503, detail=result)
 
     return router
