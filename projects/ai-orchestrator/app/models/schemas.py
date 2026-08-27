@@ -31,7 +31,7 @@ class ToolResult(BaseModel):
 
 class ToolCall(BaseModel):
     tool: str | None = None
-    arguments: dict[str, Any] = Field(default_factory={"": None})
+    arguments: dict[str, Any] = Field(default_factory=lambda: {"": None})
 
 
 class ConversationContext(BaseModel):
@@ -43,3 +43,15 @@ class ConversationContext(BaseModel):
     summary: str = ""
     system_message: ChatMessage
     current_message: ChatMessage
+
+
+class SearchFilesArguments(BaseModel):
+    query: str = Field(min_length=1)
+
+
+class ReadFileArguments(BaseModel):
+    path: str = Field(min_length=1)
+
+
+class ListDirectoryArguments(BaseModel):
+    path: str = "."

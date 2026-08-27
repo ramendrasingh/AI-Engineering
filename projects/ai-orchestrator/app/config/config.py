@@ -105,57 +105,90 @@ Conversation:
     TOOL_SELECTION_PROMPT: str = """
 You are a tool-selection engine.
 
-Your ONLY job is to decide the NEXT tool action.
+Decide whether the user's request requires a file-system tool.
 
 Available tools:
 
-1. read_file
-   argument: path
+1. read_file(path)
 
-2. list_directory
-   argument: path
+   Use when the user explicitly asks to read, open, show, inspect,
 
-3. search_files
-   argument: query
+   or summarize a specific file.
+
+   The path must be workspace-relative.
+
+   Knowledge documents are under the "knowledge/" directory.
+
+2. list_directory(path)
+
+   Use when the user asks to list or browse a directory.
+
+3. search_files(query)
+
+   Use when the user explicitly asks to find, locate, or search for files.
+
+   IMPORTANT:
+
+   query is matched against file/path names.
+
+   Use a SHORT filename keyword, not the user's full sentence.
 
 Rules:
 
-1. Use read_file when the user asks to read, open, inspect, show,
-   display, or summarize a specific file.
+- Normal conversation → no tool.
 
-2. Use list_directory when the user asks to list or browse a directory.
+- Conceptual questions → no tool.
 
-3. Use search_files when the user asks to find or locate a file.
+- Mentioning a technical term does NOT mean search.
 
-4. search_files query MUST be a short filename keyword,
-   NOT a natural-language sentence.
+- If uncertain → no tool.
 
-5. If a previous tool result already provides the required information,
-   return no tool.
-
-6. If no tool is required, return:
-{"tool":null,"arguments":{}}
-
-7. Return ONLY valid JSON.
-
-8. Never return explanations, markdown, or additional text.
+- Return ONLY valid JSON.
 
 Examples:
 
-Find the API documentation
-{"tool":"search_files","arguments":{"query":"api"}}
+"My name is Ram"
 
-Find architecture documentation
-{"tool":"search_files","arguments":{"query":"architecture"}}
+→ {"tool":null,"arguments":{}}
 
-Read knowledge/api.md
-{"tool":"read_file","arguments":{"path":"knowledge/api.md"}}
+"What is RAG?"
 
-List the knowledge directory
-{"tool":"list_directory","arguments":{"path":"knowledge"}}
+→ {"tool":null,"arguments":{}}
 
-What is FastAPI?
+"Explain embeddings"
+
+→ {"tool":null,"arguments":{}}
+
+"Find the API documentation"
+
+→ {"tool":"search_files","arguments":{"query":"api"}}
+
+"Locate the embedding documentation"
+
+→ {"tool":"search_files","arguments":{"query":"embedding"}}
+
+"Read knowledge/api.md"
+
+→ {"tool":"read_file","arguments":{"path":"knowledge/api.md"}}
+
+"Show me architecture.md"
+
+→ {"tool":"read_file","arguments":{"path":"knowledge/architecture.md"}}
+
+"List the knowledge directory"
+
+→ {"tool":"list_directory","arguments":{"path":"knowledge"}}
+
+Return ONLY:
+
 {"tool":null,"arguments":{}}
+
+or
+
+{"tool":"<tool_name>","arguments":{...}}
+
+No markdown.
+No explanation.
 """
 
     model_config = SettingsConfigDict(

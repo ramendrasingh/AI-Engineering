@@ -1,0 +1,596 @@
+[
+  {
+    "id": "conversation_001",
+    "input": "My name is Ram",
+    "expected_tool": null,
+    "expected_arguments": {}
+  },
+  {
+    "id": "conversation_002",
+    "input": "How are you?",
+    "expected_tool": null,
+    "expected_arguments": {}
+  },
+  {
+    "id": "conversation_003",
+    "input": "What is RAG?",
+    "expected_tool": null,
+    "expected_arguments": {}
+  },
+  {
+    "id": "conversation_004",
+    "input": "Explain embeddings",
+    "expected_tool": null,
+    "expected_arguments": {}
+  },
+
+  {
+    "id": "search_001",
+    "input": "Find the API documentation",
+    "expected_tool": "search_files",
+    "expected_arguments": {
+      "query": "api"
+    }
+  },
+  {
+    "id": "search_002",
+    "input": "Find the architecture documentation",
+    "expected_tool": "search_files",
+    "expected_arguments": {
+      "query": "architecture"
+    }
+  },
+  {
+    "id": "search_003",
+    "input": "Locate the embedding documentation",
+    "expected_tool": "search_files",
+    "expected_arguments": {
+      "query": "embedding"
+    }
+  },
+
+  {
+    "id": "read_001",
+    "input": "Read knowledge/api.md",
+    "expected_tool": "read_file",
+    "expected_arguments": {
+      "path": "knowledge/api.md"
+    }
+  },
+  {
+    "id": "read_002",
+    "input": "Show me architecture.md",
+    "expected_tool": "read_file",
+    "expected_arguments": {
+      "path": "knowledge/architecture.md"
+    }
+  },
+
+  {
+    "id": "directory_001",
+    "input": "List the knowledge directory",
+    "expected_tool": "list_directory",
+    "expected_arguments": {
+      "path": "knowledge"
+    }
+  },
+  {
+    "id": "directory_002",
+    "input": "Show me the files under knowledge",
+    "expected_tool": "list_directory",
+    "expected_arguments": {
+      "path": "knowledge"
+    }
+  },
+  {
+
+        "id": "conversation_001",
+
+        "input": "My name is Ram",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "conversation_002",
+
+        "input": "Hello",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "conversation_003",
+
+        "input": "How are you?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "conversation_004",
+
+        "input": "Thanks for your help",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "conversation_005",
+
+        "input": "Good morning",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "conversation_006",
+
+        "input": "Can you help me?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+    {
+
+        "id": "concept_001",
+
+        "input": "What is RAG?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "concept_002",
+
+        "input": "Explain embeddings",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "concept_003",
+
+        "input": "What is FastAPI?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "concept_004",
+
+        "input": "How does a vector database work?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "concept_005",
+
+        "input": "Explain how Docker works",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "concept_006",
+
+        "input": "What is an AI agent?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+    {
+
+        "id": "search_001",
+
+        "input": "Find the API documentation",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "api"}
+
+    },
+
+    {
+
+        "id": "search_002",
+
+        "input": "Find the architecture documentation",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "architecture"}
+
+    },
+
+    {
+
+        "id": "search_003",
+
+        "input": "Locate the embedding documentation",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "embedding"}
+
+    },
+
+    {
+
+        "id": "search_004",
+
+        "input": "Find api.md",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "api"}
+
+    },
+
+    {
+
+        "id": "search_005",
+
+        "input": "Locate architecture.md",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "architecture"}
+
+    },
+    {
+
+        "id": "search_natural_001",
+
+        "input": "Can you find the API documentation?",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "api"}
+
+    },
+
+    {
+
+        "id": "search_natural_002",
+
+        "input": "Where can I find the API documentation?",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "api"}
+
+    },
+
+    {
+
+        "id": "search_natural_003",
+
+        "input": "Can you locate the architecture documentation?",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "architecture"}
+
+    },
+
+    {
+
+        "id": "search_natural_004",
+
+        "input": "Search for the embedding documentation",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "embedding"}
+
+    },
+
+    {
+
+        "id": "search_natural_005",
+
+        "input": "I need to find the architecture file",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {"query": "architecture"}
+
+    },
+    {
+
+        "id": "read_001",
+
+        "input": "Read knowledge/api.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/api.md"
+
+        }
+
+    },
+
+    {
+
+        "id": "read_002",
+
+        "input": "Open knowledge/api.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/api.md"
+
+        }
+    },
+
+    {
+
+        "id": "read_003",
+
+        "input": "Show me the contents of knowledge/api.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/api.md"
+
+        }
+
+    },
+    {
+
+        "id": "read_004",
+
+        "input": "Read api.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/api.md"
+
+        }
+
+    },
+
+    {
+
+        "id": "read_005",
+
+        "input": "Open architecture.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/architecture.md"
+
+        }
+
+    },
+
+    {
+
+        "id": "read_006",
+
+        "input": "Show me what's inside architecture.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/architecture.md"
+
+        }
+
+    },
+    {
+
+        "id": "directory_001",
+
+        "input": "List the knowledge directory",
+
+        "expected_tool": "list_directory",
+
+        "expected_arguments": {
+
+            "path": "knowledge"
+
+        }
+
+    },
+
+    {
+
+        "id": "directory_002",
+
+        "input": "Show me the files under knowledge",
+
+        "expected_tool": "list_directory",
+
+        "expected_arguments": {
+
+            "path": "knowledge"
+
+        }
+
+    },
+
+    {
+
+        "id": "directory_003",
+
+        "input": "What files are inside knowledge?",
+
+        "expected_tool": "list_directory",
+
+        "expected_arguments": {
+
+            "path": "knowledge"
+
+        }
+
+    },
+
+    {
+
+        "id": "directory_004",
+
+        "input": "Browse the knowledge folder",
+
+        "expected_tool": "list_directory",
+
+        "expected_arguments": {
+
+            "path": "knowledge"
+
+        }
+
+    },
+
+    {
+
+        "id": "directory_005",
+
+        "input": "Show the contents of the knowledge directory",
+
+        "expected_tool": "list_directory",
+
+        "expected_arguments": {
+
+            "path": "knowledge"
+
+        }
+
+    },
+    {
+
+        "id": "boundary_001",
+
+        "input": "Tell me about the API",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "boundary_002",
+
+        "input": "Explain the architecture",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "boundary_003",
+
+        "input": "Tell me about embeddings",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "boundary_004",
+
+        "input": "What do you know about RAG?",
+
+        "expected_tool": null,
+
+        "expected_arguments": {}
+
+    },
+
+    {
+
+        "id": "boundary_005",
+
+        "input": "I need the architecture documentation",
+
+        "expected_tool": "search_files",
+
+        "expected_arguments": {
+
+            "query": "architecture"
+
+        }
+
+    },
+
+    {
+
+        "id": "boundary_006",
+
+        "input": "I want to see api.md",
+
+        "expected_tool": "read_file",
+
+        "expected_arguments": {
+
+            "path": "knowledge/api.md"
+
+        }
+
+    }
+]

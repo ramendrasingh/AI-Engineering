@@ -9,6 +9,7 @@ from app.rag.retriever import Retriever
 from app.rag.vector_store import VectorStore
 from app.summary.conversation_summary import SummaryManager
 from app.tokenizer.token_counter import TokenCounter
+from app.tool.executor import ToolExecutor
 from app.tool.list_directory import ListDirectoryTool
 from app.tool.read_file import ReadFileTool
 from app.tool.registry import ToolRegistry
@@ -27,14 +28,15 @@ def create_orchestrator() -> Orchestrator:
     token_counter = TokenCounter()
 
     summary_manager = SummaryManager(client=client)
+    tool_executor = ToolExecutor()
 
     return Orchestrator(
         llm_client=client,
         memory=memory,
         retriever=retriever,
-        tool_registory=tool_registry,
         token_counter=token_counter,
         summary_manager=summary_manager,
+        tool_executor=tool_executor,
     )
 
 

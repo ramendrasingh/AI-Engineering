@@ -5,7 +5,7 @@ from app.models.schemas import ChatMessage, ConversationContext, ToolCall
 from app.rag.chunker import Chunk
 from app.summary.conversation_summary import SummaryManager
 from app.tokenizer.token_counter import TokenCounter
-from app.tool.registry import ToolRegistry
+from app.tool.executor import ToolExecutor
 
 
 class Orchestrator:
@@ -14,16 +14,16 @@ class Orchestrator:
         llm_client,
         memory,
         retriever,
-        tool_registory: ToolRegistry,
         token_counter: TokenCounter,
         summary_manager: SummaryManager,
+        tool_executor: ToolExecutor,
     ):
         self.llm_client = llm_client
         self.memory = memory
         self.token_counter = token_counter
         self.summary_manager = summary_manager
         self.retriever = retriever
-        self.tool_registry = tool_registory
+        self.tool_executor = tool_executor
 
     def process_message(self, conversation_id: str, role: str, content: str) -> str:
 
@@ -104,11 +104,24 @@ class Orchestrator:
         return decision
 
     def execute_tool(self, tool_call: ToolCall) -> ChatMessage:
-        tool = self.tool_registry.get_tool(tool_call.tool)
-        tool_result = tool.execute(**tool_call.arguments)
-        content = f"Tool executed: {tool_call.tool}\nArguments: {tool_call.arguments}\n\nTool result:\n{tool_result.content}"
 
-        return ChatMessage(role="system", content=content)
+        logger.info(
+            f"Executing tool through registry: "
+            f"{tool_call.tool}, arguments={tool_call.arguments}"
+        )
+
+        tool_result = self.tool_executor.execute(tool_call=tool_call)
+
+        content = (
+            f"Tool executed: {tool_call.tool}\n"
+            f"Arguments: {tool_call.arguments}\n\n"
+            f"Tool result:\n{tool_result.content}"
+        )
+
+        return ChatMessage(
+            role="system",
+            content=content,
+        )
 
     def __build_tool_context(
         self,
@@ -301,12 +314,11 @@ class Orchestrator:
 
             if decision.tool is None:
                 logger.info("Tool execution completed")
-                break
+                return messages
 
-        if step > max_steps:
-            raise RuntimeError("Maximum tool steps exceeded")
+        logger.error(f"Maximum tool steps exceeded: {max_steps}")
 
-        return messages
+        raise RuntimeError(f"Maximum tool steps exceeded: {max_steps}")
 
     def __calculate_available_budget(self) -> int:
         return settings.MAX_TOKEN_COUNT - settings.OUTPUT_RESERVE_TOKENS

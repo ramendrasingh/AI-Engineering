@@ -2,7 +2,7 @@ from pathlib import Path
 
 from app.config.config import settings
 from app.logger.logger import logger
-from app.models.schemas import ToolResult
+from app.models.schemas import SearchFilesArguments, ToolCall, ToolResult
 from app.tool.base import Tool
 
 
@@ -11,6 +11,7 @@ class SearchFilesTool(Tool):
     description = (
         "Recursively search the workspace for files matching a filename query."
     )
+    args_schema = SearchFilesArguments
 
     def __init__(
         self,
@@ -26,8 +27,9 @@ class SearchFilesTool(Tool):
         )
         self.max_result = max_result
 
-    def execute(self, query: str) -> ToolResult:
+    def execute(self, tool_call: ToolCall) -> ToolResult:
         logger.info("executing search files Tool")
+        query = tool_call.arguments["query"]
         try:
             query = query.lower().strip()
 
@@ -71,3 +73,16 @@ class SearchFilesTool(Tool):
                 content="",
                 error=str(e),
             )
+
+    def validate_arguments(self, arguments: dict) -> None:
+
+        if "query" not in arguments:
+            raise ValueError("Missing required argument: query")
+
+        query = arguments["query"]
+
+        if not isinstance(query, str):
+            raise ValueError("Argument 'query' must be a string")
+
+        if not query.strip():
+            raise ValueError("Argument 'query' cannot be empty")
