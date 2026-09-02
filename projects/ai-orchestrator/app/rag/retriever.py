@@ -1,4 +1,5 @@
 from app.logger.logger import logger
+from app.observability.timer import Timer
 from app.rag.chunker import Chunk
 from app.rag.embedding import EmbeddingService
 from app.rag.vector_store import VectorStore
@@ -13,6 +14,7 @@ class Retriever:
         self.embedding_service = embedding_service
         self.vector_store = vector_store
 
+    @Timer.timed("rag_retrieval")
     def retrieve(
         self, query: str, top_k: int = 3, min_threshold: int = 0.75
     ) -> list[Chunk]:

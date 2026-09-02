@@ -35,6 +35,7 @@ class ToolCall(BaseModel):
 
 
 class ConversationContext(BaseModel):
+    request_id: str
     conversation_id: str
     role: str
     user_message: str

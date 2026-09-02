@@ -28,7 +28,7 @@ def create_orchestrator() -> Orchestrator:
     token_counter = TokenCounter()
 
     summary_manager = SummaryManager(client=client)
-    tool_executor = ToolExecutor()
+    tool_executor = ToolExecutor(tool_registry)
 
     return Orchestrator(
         llm_client=client,

@@ -3,6 +3,7 @@ import requests
 from app.config.config import settings
 from app.logger.logger import logger
 from app.models.schemas import ChatMessage
+from app.observability.timer import Timer
 
 
 class OllamaClient:
@@ -56,6 +57,7 @@ class OllamaClient:
             logger.error(f"Error generating response: {e}")
             raise RuntimeError(f"Failed to communicate with Ollama: {e}")
 
+    @Timer.timed("llm_call")
     def chat(self, messages) -> ChatMessage:
         logger.info(
             f"Generating response for prompt:, base url: {settings.OLLAMA_BASE_URL}, model: {settings.MODEL_NAME}"

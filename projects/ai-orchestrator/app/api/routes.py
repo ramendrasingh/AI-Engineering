@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, HTTPException
 
 from app.health.health_service import HealthService
@@ -24,12 +26,16 @@ def create_router(orchestrator: Orchestrator) -> APIRouter:
 
     @router.post("/chat", response_model=GenerateResponse)
     def chat(request: GenerateRequest) -> GenerateResponse:
+        request_id = str(uuid.uuid4())
         try:
             if not request.prompt:
                 raise HTTPException(status_code=400, detail="Prompt is required.")
 
             response = orchestrator.process_message(
-                conversation_id=request.user_id, role="user", content=request.prompt
+                request_id=request_id,
+                conversation_id=request.user_id,
+                role="user",
+                content=request.prompt,
             )
             return GenerateResponse(response=response)
         except RuntimeError as e:

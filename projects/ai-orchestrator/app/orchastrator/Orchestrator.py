@@ -25,11 +25,22 @@ class Orchestrator:
         self.retriever = retriever
         self.tool_executor = tool_executor
 
-    def process_message(self, conversation_id: str, role: str, content: str) -> str:
+    def process_message(
+        self, request_id: str, conversation_id: str, role: str, content: str
+    ) -> str:
+
+        logger.info(
+            f"request_id={request_id} "
+            f"conversation_id={conversation_id} "
+            f"event=request_completed"
+        )
 
         # 1. Retrieve the conversation history for context
         conversation_context = self.__prepare_conversation_context(
-            conversation_id=conversation_id, role=role, content=content
+            request_id=request_id,
+            conversation_id=conversation_id,
+            role=role,
+            content=content,
         )
 
         # check for tool uses
@@ -38,6 +49,7 @@ class Orchestrator:
         final_messages = []
         if decision.tool is not None:
             final_messages = self.__build_tool_context(
+                request_id=request_id,
                 context=conversation_context,
                 decision=decision,
             )
@@ -125,6 +137,7 @@ class Orchestrator:
 
     def __build_tool_context(
         self,
+        request_id: str,
         context: ConversationContext,
         decision: ToolCall,
     ) -> list[dict]:
@@ -141,6 +154,7 @@ class Orchestrator:
         )
 
         messages = self.__run_tool_loop(
+            request_id=request_id,
             messages=messages,
             initial_decision=decision,
         )
@@ -148,6 +162,7 @@ class Orchestrator:
         estimated_tokens = self.token_counter.count_messages(messages)
 
         logger.info(
+            f"request_id={context.request_id}\n"
             f"conversation_id={context.conversation_id}\n"
             f"path=TOOLS\n"
             f"tool_messages={len(messages)}\n"
@@ -233,6 +248,7 @@ class Orchestrator:
 
     def __prepare_conversation_context(
         self,
+        request_id: str,
         conversation_id: str,
         role: str,
         content: str,
@@ -257,6 +273,7 @@ class Orchestrator:
         )
 
         return ConversationContext(
+            request_id=request_id,
             conversation_id=conversation_id,
             role=role,
             user_message=content,
@@ -291,6 +308,7 @@ class Orchestrator:
 
     def __run_tool_loop(
         self,
+        request_id: str,
         messages: list[ChatMessage],
         initial_decision: ToolCall,
     ) -> list[ChatMessage]:
@@ -302,7 +320,11 @@ class Orchestrator:
         max_steps = settings.MAX_TOOL_STEPS
 
         for step in range(max_steps):
-            logger.info(f"Tool step {step + 1}/{max_steps}")
+            logger.info(
+                f"request_id={request_id} "
+                f"tool_step={step + 1}/{max_steps} "
+                f"tool={decision.tool}"
+            )
 
             tool_result = self.execute_tool(decision)
 
